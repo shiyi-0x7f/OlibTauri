@@ -1,0 +1,89 @@
+/* ===========================
+   OlibFluent Design System
+   Modern dark theme with glassmorphism
+   =========================== */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Variables */
+:root {
+  /* Accent color (dynamic, set by JS) */
+  --accent: #009faa;
+  --accent-light: #00c4d0;
+  --accent-dark: #007a83;
+  --accent-glow: rgba(0, 159, 170, 0.3);
+  --accent-rgb: 0, 159, 170;
+
+  /* Status colors */
+  --success: #22c55e;
+  --warning: #eab308;
+  --error: #ef4444;
+  --info: #3b82f6;
+
+  /* Spacing */
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+  --header-height: 52px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Typography */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+}
+
+/* Dark Theme (Default) */
+:root,
+:root[data-theme="dark"] {
+  /* Colors */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a2e;
+  --bg-surface: rgba(26, 26, 46, 0.7);
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(var(--accent-rgb), 0.15);
+
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898b0;
+  --text-muted: #5a5a72;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+}
+
+/* Light Theme */
+:root[data-theme="light"] {
+  /* Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f1f3;
+  --bg-surface: rgba(255, 255, 255, 0.8);
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --bg-active: rgba(var(--accent-rgb), 0.1);
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a72;
+  --text-muted: #9898b0;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.12);
+
+  /* Adjust shadows for light theme */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+

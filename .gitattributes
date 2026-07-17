@@ -1,0 +1,33 @@
+# 统一换行：仓库内文本一律 LF（兼容 Linux / Mac），消除 Windows 下 autocrlf 造成的"幻影改动"。
+# 新接入已存在的仓库时执行一次：
+#   git add --renormalize . && git commit -m "chore: normalize line endings"
+
+# 默认：自动识别文本，签出时统一为 LF
+* text=auto eol=lf
+
+# 必须 LF（否则 Linux/Mac/CI 下脚本无法执行）
+*.sh   text eol=lf
+
+# Windows 专用脚本保留 CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# 二进制：不做换行/编码转换
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.exe  binary
+*.dll  binary
+*.so   binary
+*.dylib binary

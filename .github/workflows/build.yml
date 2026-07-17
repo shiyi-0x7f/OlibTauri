@@ -1,0 +1,120 @@
+name: Build & Release
+
+# 构建前需要拉取私有 API vendor crate（path 依赖，源码不在本公开仓库）。
+#
+# 必需 secret（仓库 Settings → Secrets and variables → Actions）：
+#   OLIB_API_REPO_TOKEN  对私有仓库 shiyi-0x7f/olib-api-plugin-rs 有 read 权限的
+#                        token。推荐 fine-grained PAT，仅授予该仓库 Contents: Read。
+#                        CI 用它 HTTPS clone 私有 crate 到 vendor/olib-api-plugin-rs/。
+# 详见 dev_docs/refs/olib-api-plugin-rs.md。
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: short
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            rust_target: x86_64-pc-windows-msvc
+            label: Windows-x64
+          - platform: windows-latest
+            rust_target: aarch64-pc-windows-msvc
+            label: Windows-arm64
+            args: --target aarch64-pc-windows-msvc
+          - platform: macos-latest
+            rust_target: aarch64-apple-darwin
+            label: macOS-arm64
+          - platform: macos-latest
+            rust_target: x86_64-apple-darwin
+            label: macOS-x64
+            args: --target x86_64-apple-darwin
+          - platform: ubuntu-22.04
+            rust_target: x86_64-unknown-linux-gnu
+            label: Linux-x64
+
+    runs-on: ${{ matrix.platform }}
+    name: Build (${{ matrix.label }})
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 拉取私有 API vendor crate 到 vendor/。Cargo 用 path 依赖，必须在 build 前 clone。
+      - name: Fetch private API vendor crate
+        shell: bash
+        env:
+          OLIB_API_REPO_TOKEN: ${{ secrets.OLIB_API_REPO_TOKEN }}
+        run: |
+          if [ -z "$OLIB_API_REPO_TOKEN" ]; then
+            echo "::error::OLIB_API_REPO_TOKEN secret is missing. See workflow header for setup."
+            exit 1
+          fi
+          rm -rf vendor/olib-api-plugin-rs
+          mkdir -p vendor
+          git clone --depth 1 \
+            "https://x-access-token:${OLIB_API_REPO_TOKEN}@github.com/shiyi-0x7f/olib-api-plugin-rs.git" \
+            vendor/olib-api-plugin-rs
+          echo "Cloned vendor crate → vendor/olib-api-plugin-rs/"
+          ls vendor/olib-api-plugin-rs/src/
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          shared-key: ${{ matrix.rust_target }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # Linux: install system dependencies required by Tauri v2
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev \
+            libgtk-3-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Olib ${{ github.ref_name }}"
+          releaseBody: |
+            See the assets below to download the installer for your platform.
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
+          tauriScript: npx tauri

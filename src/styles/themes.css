@@ -1,0 +1,183 @@
+/* ===========================
+   Glass / Mica Theme
+   Transparent backgrounds to reveal OS vibrancy
+   =========================== */
+:root[data-theme="glass"] {
+  --bg-primary: rgba(10, 10, 15, 0.55);
+  --bg-secondary: rgba(18, 18, 26, 0.45);
+  --bg-tertiary: rgba(26, 26, 46, 0.4);
+  --bg-surface: rgba(26, 26, 46, 0.35);
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(var(--accent-rgb), 0.15);
+
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6a6a82;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="glass"] body,
+:root[data-theme="glass"] #root {
+  background: transparent !important;
+}
+
+:root[data-theme="glass"] .sidebar {
+  background: rgba(18, 18, 26, 0.4);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+}
+
+:root[data-theme="glass"] .card {
+  background: rgba(26, 26, 46, 0.3);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+:root[data-theme="glass"] .modal {
+  background: rgba(18, 18, 26, 0.6);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+}
+
+/* ===========================
+   Dynamic Glow Theme
+   Animated gradient mesh background
+   =========================== */
+:root[data-theme="dynamic"] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: rgba(18, 18, 26, 0.85);
+  --bg-tertiary: rgba(26, 26, 46, 0.7);
+  --bg-surface: rgba(26, 26, 46, 0.5);
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(var(--accent-rgb), 0.15);
+
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898b0;
+  --text-muted: #5a5a72;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes dynamicGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  25% {
+    background-position: 50% 100%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  75% {
+    background-position: 50% 0%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes orbFloat1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(80px, -60px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(-40px, -120px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(-80px, 40px) scale(1.05);
+  }
+}
+
+@keyframes orbFloat2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(-60px, 80px) scale(1.05);
+  }
+
+  50% {
+    transform: translate(100px, 40px) scale(0.9);
+  }
+
+  75% {
+    transform: translate(40px, -80px) scale(1.1);
+  }
+}
+
+:root[data-theme="dynamic"] body {
+  background: #0a0a0f;
+  position: relative;
+  overflow: hidden;
+}
+
+:root[data-theme="dynamic"] body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(var(--accent-rgb), 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+  background-size: 100% 100%;
+  animation: dynamicGlow 15s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:root[data-theme="dynamic"] body::after {
+  content: '';
+  position: fixed;
+  top: 10%;
+  right: 15%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: orbFloat1 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:root[data-theme="dynamic"] #root {
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-theme="dynamic"] .sidebar {
+  background: rgba(18, 18, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+:root[data-theme="dynamic"] .card {
+  background: rgba(26, 26, 46, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
