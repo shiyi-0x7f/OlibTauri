@@ -1,0 +1,422 @@
+/* ===========================
+   书架页（BookshelfPage）
+   页头（标题 + 统计 + 操作）→ 工具栏（分类 + 搜索）→ 表格式文件列表（独立滚动）→ 底部下载面板
+   =========================== */
+
+.page-container.bs-page {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 表头与行共用同一套列：色块 | 名称 | 修改时间 | 大小 | 操作 */
+.bs-list {
+  --bs-columns: 30px minmax(0, 1fr) 92px 72px 96px;
+}
+
+/* ---------- 页头 ---------- */
+
+.bs-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.bs-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+
+.bs-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.bs-title span {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 工具栏 ---------- */
+
+.bs-toolbar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.bs-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 分类：胶囊标签，单行不换行，放不下时横向滚动 */
+.bs-tabs {
+  display: flex;
+  flex: 0 1 auto;
+  gap: 4px;
+  min-width: 0;
+  padding: 3px;
+  overflow-x: auto;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  scrollbar-width: none;
+}
+
+.bs-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.bs-tab {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  padding: 5px 11px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.bs-tab:hover {
+  color: var(--text-primary);
+}
+
+.bs-tab.is-active {
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.bs-tab-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bs-search {
+  position: relative;
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.bs-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.bs-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 30px 0 33px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.bs-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.bs-search-input:focus {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12);
+}
+
+.bs-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  display: flex;
+  padding: 4px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.bs-search-clear:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* 子格式：单行横向滚动（「其他」里可能有几十种格式），右侧渐隐提示还有更多 */
+.bs-subformats {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+  animation: fadeIn 200ms ease;
+}
+
+.bs-subformats::-webkit-scrollbar {
+  display: none;
+}
+
+.bs-subformat {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  white-space: nowrap;
+  gap: 5px;
+  padding: 2px 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bs-subformat:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+.bs-subformat.is-active {
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border-color: rgba(var(--accent-rgb), 0.35);
+}
+
+/* ---------- 文件列表 ---------- */
+
+.bs-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.bs-list-head {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: var(--bs-columns);
+  align-items: center;
+  column-gap: 14px;
+  padding: 0 14px;
+  height: 38px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bs-head-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.bs-head-cell:hover,
+.bs-head-cell.is-active {
+  color: var(--text-primary);
+}
+
+.bs-head-name {
+  grid-column: 1 / 3;
+}
+
+.bs-head-cell.bs-cell-size {
+  justify-self: end;
+}
+
+.bs-head-count {
+  padding: 0 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bs-rows {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+}
+
+.bs-row {
+  display: grid;
+  grid-template-columns: var(--bs-columns);
+  align-items: center;
+  column-gap: 14px;
+  min-height: 38px;
+  margin: 0 6px;
+  padding: 5px 8px;
+  border-radius: var(--radius-md);
+  cursor: default;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.bs-row:hover {
+  background: var(--bg-hover);
+}
+
+/* 格式色块：书脊造型，格式缩写印在上面 */
+.bs-format {
+  --bs-tone: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 34px;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--bs-tone);
+  background: color-mix(in srgb, var(--bs-tone) 14%, transparent);
+  border-left: 3px solid var(--bs-tone);
+  border-radius: 3px 5px 5px 3px;
+}
+
+.bs-format.is-long {
+  font-size: 7px;
+  letter-spacing: -0.02em;
+}
+
+/* 文件夹不做书脊，就是一个暖色文件夹图标 */
+.bs-format.is-dir {
+  background: color-mix(in srgb, var(--bs-tone) 12%, transparent);
+  border-left: none;
+  border-radius: 7px;
+}
+
+.bs-format.is-dir svg {
+  fill-opacity: 0.35;
+}
+
+.bs-row-main {
+  min-width: 0;
+}
+
+.bs-row-name {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bs-row-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.bs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 999px;
+}
+
+.bs-chip-done {
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.bs-chip-derived,
+.bs-chip-busy {
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.bs-cell {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.bs-cell-size {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* 悬停才露出的快捷操作；键盘聚焦时也显示 */
+.bs-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.bs-row:hover .bs-row-actions,
+.bs-row-actions:focus-within {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .bs-row-actions {
+    opacity: 1;
+  }
+}
+
+/* 窄窗口：先收起修改时间列 */
+@media (max-width: 900px) {
+  .bs-list {
+    --bs-columns: 30px minmax(0, 1fr) 72px 96px;
+  }
+
+  .bs-cell-time {
+    display: none;
+  }
+}

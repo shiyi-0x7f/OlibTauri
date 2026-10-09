@@ -1,0 +1,17 @@
+pub mod auth_commands;
+pub mod book_commands;
+pub mod booklist_commands;
+pub mod bookshelf_commands;
+pub mod config_commands;
+pub mod convert_commands;
+pub mod cover_commands;
+pub mod download_commands;
+pub mod favorite_commands;
+pub mod lan_commands;
+pub mod ocr_commands;
+pub mod plugin_commands;
+pub mod prescriber_commands;
+pub mod reader_commands;
+pub mod search_commands;
+pub mod shortcut_commands;
+pub mod weread_commands;
