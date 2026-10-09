@@ -1,0 +1,167 @@
+/* ===========================
+   侧边栏「书架」旁的下载中标识
+   =========================== */
+.nav-download-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  margin-left: auto;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-light);
+  background: rgba(var(--accent-rgb), 0.15);
+  border-radius: 9px;
+}
+
+/* 箭头从上方落下、落进底部托盘线后淡出，循环 */
+.nav-download-arrow {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  width: 12px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.nav-download-arrow svg {
+  animation: nav-download-drop 1.2s ease-in infinite;
+}
+
+.nav-download-arrow::after {
+  content: "";
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  left: 1px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+@keyframes nav-download-drop {
+  0% {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-download-arrow svg {
+    animation: none;
+  }
+}
+
+/* ===========================
+   Download Queue（书架底部下载面板）
+   =========================== */
+.download-queue {
+  flex-shrink: 0;
+  margin-top: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  animation: fadeIn 300ms ease;
+}
+
+.download-queue-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.download-queue-bar:hover {
+  background: var(--bg-hover);
+}
+
+.download-queue-summary {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.download-queue-mini-progress {
+  width: 120px;
+  height: 4px;
+}
+
+.download-queue-chevron {
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.download-queue-expanded .download-queue-chevron {
+  transform: rotate(180deg);
+}
+
+.download-queue-body {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 4px 12px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.download-queue-item {
+  padding: 10px 6px;
+}
+
+.download-queue-item + .download-queue-item {
+  border-top: 1px solid var(--border);
+}
+
+.download-queue-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.download-queue-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.download-queue-tip-title {
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.download-queue-tip-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}

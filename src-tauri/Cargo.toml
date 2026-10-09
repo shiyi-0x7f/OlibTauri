@@ -1,0 +1,69 @@
+[package]
+name = "olib-fluent"
+version = "3.4.0"
+description = "Olib - An open-source desktop client for searching, downloading, and managing e-books"
+authors = ["shiyi0x7f"]
+edition = "2021"
+
+[lib]
+name = "olib_fluent_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] } 
+
+[dependencies]
+# 私有 API 客户端 + 数据模型 + 内置域名（源码在 vendor/，不入公开仓库）
+olib_api = { path = "../vendor/olib-api-plugin-rs" }
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json", "cookies", "stream", "gzip", "brotli", "deflate", "multipart"] }
+tokio = { version = "1", features = ["full"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+log = "0.4"
+env_logger = "0.11"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+futures-util = "0.3"
+opener = "0.7"
+once_cell = "1.21.3"
+tauri-plugin-notification = "2"
+tauri-plugin-global-shortcut = "2.3.1"
+window-vibrancy = "0.5"
+# multipart：LAN 服务接收移动端上传的书籍文件（POST /api/upload）
+axum = { version = "0.8", features = ["multipart"] }
+tower-http = { version = "0.6", features = ["cors"] }
+local-ip-address = "0.6"
+qrcode = "0.14"
+base64 = "0.22"
+tauri-plugin-shell = "2"
+rand = "0.8"
+tauri-plugin-single-instance = "2.4.1"
+# 插件系统：zip 解压第三方插件包、sha256 校验下载完整性、regex 解析插件进度输出
+zip = { version = "2", default-features = false, features = ["deflate", "bzip2", "zstd"] }
+sha2 = "0.10"
+regex = "1"
+sha1 = "0.10"
+hmac = "0.12"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+webview2-com = "0.38"
+
+# 禁止调试宏与 stdout 散落（日志统一走 log），CI 以 -D warnings 升为硬门禁
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+# 发布产物调优：见 dev_docs/engineering-optimization.md P0-1。
+# 不设 panic = "abort"：全局锁的中毒收敛依赖 unwind 语义。
+[profile.release]
+lto = "thin"
+strip = true
+codegen-units = 1
+opt-level = "s"

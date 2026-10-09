@@ -1,0 +1,87 @@
+/* ===========================
+   Download History（下载历史页）
+   =========================== */
+.history-search {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.history-search .search-input {
+  width: 100%;
+  height: 38px;
+  padding-left: 36px;
+  font-size: 13px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.history-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.history-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 48px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.history-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.history-time {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-missing {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+.history-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+}
+
+.history-group + .history-group {
+  margin-top: 20px;
+}
+
+.history-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.history-group-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
