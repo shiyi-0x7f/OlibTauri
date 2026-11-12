@@ -1,0 +1,920 @@
+/* ===========================
+   微信读书页（WereadPage）
+   布局参考 olib-mobile 首页：继续阅读 → 阅读节奏 → 数据 → 重温划线 / 阅读偏好 → 推荐 → 书架 → 笔记
+   =========================== */
+
+.wr-page {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.wr-page-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ---------- 页头 ---------- */
+
+.wr-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wr-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.wr-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.wr-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wr-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.wr-pill-btn:hover:not(:disabled) {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  color: var(--accent);
+}
+
+.wr-pill-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- 通用 ---------- */
+
+.wr-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.wr-grid-2.even {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+@media (max-width: 1000px) {
+  .wr-grid-2,
+  .wr-grid-2.even {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.wr-card {
+  padding: 20px 22px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.wr-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.wr-section-title svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.wr-section-title .wr-section-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.wr-section-title .wr-section-trailing {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wr-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.wr-link-btn:hover:not(:disabled) {
+  background: rgba(var(--accent-rgb), 0.1);
+}
+
+.wr-link-btn:disabled {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.wr-muted {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.wr-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--error);
+}
+
+.wr-error span {
+  flex: 1;
+  user-select: text;
+  word-break: break-all;
+}
+
+.wr-skeleton {
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    var(--bg-hover) 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: wr-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes wr-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* 封面：统一比例、阴影与占位 */
+.wr-cover {
+  position: relative;
+  flex-shrink: 0;
+  aspect-ratio: 3 / 4.2;
+  border-radius: 6px 10px 10px 6px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.25),
+    inset 3px 0 0 rgba(0, 0, 0, 0.12);
+}
+
+.wr-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wr-cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* ---------- 继续阅读（Hero） ---------- */
+
+.wr-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  gap: 24px;
+  padding: 26px 28px;
+  border-radius: 22px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  box-shadow: 0 12px 32px rgba(var(--accent-rgb), 0.28);
+  min-height: 210px;
+}
+
+/* 装饰光斑 */
+.wr-hero::before,
+.wr-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.wr-hero::before {
+  width: 260px;
+  height: 260px;
+  right: -80px;
+  top: -120px;
+}
+
+.wr-hero::after {
+  width: 160px;
+  height: 160px;
+  right: 120px;
+  bottom: -100px;
+}
+
+.wr-hero .wr-cover {
+  width: 112px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.wr-hero-body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wr-hero-eyebrow {
+  font-size: 12px;
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+}
+
+.wr-hero-title {
+  margin-top: 8px;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wr-hero-author {
+  margin-top: 4px;
+  font-size: 13px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-hero-progress {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+.wr-hero-progress-track {
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.wr-hero-progress-track > div {
+  height: 100%;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.wr-hero-actions {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wr-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.wr-hero-btn:hover {
+  transform: translateY(-1px);
+}
+
+.wr-hero-btn.primary {
+  background: #fff;
+  color: var(--accent-dark);
+}
+
+.wr-hero-btn.ghost {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.wr-hero-recent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 64px;
+}
+
+.wr-hero-recent .wr-cover {
+  width: 64px;
+  cursor: pointer;
+  opacity: 0.88;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.wr-hero-recent .wr-cover:hover {
+  opacity: 1;
+  transform: translateX(-2px);
+}
+
+.wr-hero-recent-label {
+  font-size: 11px;
+  opacity: 0.8;
+  text-align: center;
+}
+
+@media (max-width: 1180px) {
+  .wr-hero-recent {
+    display: none;
+  }
+}
+
+/* ---------- 阅读节奏 ---------- */
+
+.wr-rhythm-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wr-rhythm-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.wr-rhythm-value small {
+  margin-left: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.wr-segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+}
+
+.wr-segmented button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wr-segmented button.active {
+  background: var(--bg-primary);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.wr-goal-track {
+  margin-top: 12px;
+  height: 8px;
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.14);
+  overflow: hidden;
+}
+
+.wr-goal-track > div {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent-light), var(--accent));
+  transition: width var(--transition-slow);
+}
+
+.wr-week {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  align-items: end;
+  height: 110px;
+}
+
+.wr-week-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  height: 100%;
+}
+
+.wr-week-bar {
+  width: 100%;
+  max-width: 26px;
+  border-radius: 7px 7px 4px 4px;
+  background: rgba(var(--accent-rgb), 0.26);
+  transition: height var(--transition-slow);
+}
+
+.wr-week-col.today .wr-week-bar {
+  background: linear-gradient(180deg, var(--accent-light), var(--accent));
+}
+
+.wr-week-col.future .wr-week-bar {
+  background: var(--bg-tertiary);
+}
+
+.wr-week-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.wr-week-col.today .wr-week-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.wr-week-min {
+  font-size: 10px;
+  color: var(--text-secondary);
+  min-height: 13px;
+}
+
+/* ---------- 数据条 ---------- */
+
+.wr-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.wr-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.wr-stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wr-stat-value {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.wr-stat-label {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ---------- 重温划线 ---------- */
+
+.wr-quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(var(--accent-rgb), 0.1), transparent 55%),
+    var(--bg-secondary);
+}
+
+.wr-quote-mark {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 56px;
+  line-height: 0.6;
+  height: 26px;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+.wr-quote-text {
+  margin-top: 6px;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wr-quote-source {
+  margin-top: auto;
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.wr-quote-source span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 阅读偏好 ---------- */
+
+.wr-pref-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.wr-pref-row {
+  display: grid;
+  grid-template-columns: 76px 1fr 64px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.wr-pref-row + .wr-pref-row {
+  margin-top: 9px;
+}
+
+.wr-pref-name {
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-pref-track {
+  height: 8px;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.wr-pref-track > div {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent-light), var(--accent));
+}
+
+.wr-hours {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 3px;
+  align-items: end;
+  height: 46px;
+}
+
+.wr-hours > div {
+  border-radius: 3px 3px 1px 1px;
+  background: rgba(var(--accent-rgb), 0.6);
+}
+
+.wr-hours-axis {
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ---------- 书架横排 ---------- */
+
+.wr-hscroll {
+  display: flex;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+}
+
+.wr-page-inner > section {
+  min-width: 0;
+}
+
+.wr-shelf-item {
+  flex: 0 0 112px;
+  width: 112px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wr-shelf-item .wr-cover {
+  width: 112px;
+  transition: transform var(--transition-fast);
+}
+
+.wr-shelf-item:hover .wr-cover {
+  transform: translateY(-3px);
+}
+
+.wr-shelf-title {
+  margin-top: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-shelf-progress {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.wr-shelf-progress-track {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.wr-shelf-progress-track > div {
+  height: 100%;
+  background: var(--accent);
+}
+
+.wr-badge-done {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 10px;
+}
+
+/* ---------- 笔记 ---------- */
+
+.wr-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  width: 220px;
+}
+
+.wr-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.wr-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+}
+
+.wr-note-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.wr-note-card:hover {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.wr-note-card .wr-cover {
+  width: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.wr-note-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-note-author {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-note-chips {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wr-chip {
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.wr-chip.accent {
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent);
+}
+
+.wr-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.wr-icon-btn:hover {
+  color: var(--accent);
+  border-color: rgba(var(--accent-rgb), 0.5);
+}
+
+/* ---------- 未连接 ---------- */
+
+.wr-connect {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.wr-connect-card {
+  max-width: 440px;
+  padding: 36px 32px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(var(--accent-rgb), 0.16), transparent 60%),
+    var(--bg-secondary);
+  text-align: center;
+}
+
+.wr-connect-card h2 {
+  margin: 18px 0 8px;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.wr-connect-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.wr-connect-features {
+  margin: 20px 0 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  text-align: left;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.wr-connect-features div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wr-connect-features svg {
+  color: var(--accent);
+}

@@ -1,0 +1,123 @@
+/* 首页（发现页）底部快捷功能卡片 */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 880px;
+  margin: 20px auto 8px;
+}
+
+@media (max-width: 760px) {
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 每张卡片的主题色（RGB 三元组），由 data-tint 选择 */
+.quick-action {
+  --qa-rgb: var(--accent-rgb);
+}
+.quick-action[data-tint="violet"] {
+  --qa-rgb: 139, 92, 246;
+}
+.quick-action[data-tint="amber"] {
+  --qa-rgb: 245, 158, 11;
+}
+.quick-action[data-tint="rose"] {
+  --qa-rgb: 244, 63, 94;
+}
+
+.quick-action {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  text-align: left;
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.quick-action:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--qa-rgb), 0.35);
+  box-shadow: 0 8px 24px rgba(var(--qa-rgb), 0.12);
+}
+
+.quick-action:focus-visible {
+  outline: 2px solid rgba(var(--qa-rgb), 0.6);
+  outline-offset: 2px;
+}
+
+.quick-action-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: rgb(var(--qa-rgb));
+  background: linear-gradient(135deg, rgba(var(--qa-rgb), 0.22), rgba(var(--qa-rgb), 0.08));
+}
+
+.quick-action-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-action-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.quick-action-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 无线传书运行中：右上角呼吸绿点 */
+.quick-action-live {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  animation: quick-action-pulse 2s ease-out infinite;
+}
+
+@keyframes quick-action-pulse {
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-action,
+  .quick-action-live {
+    transition: none;
+    animation: none;
+  }
+}

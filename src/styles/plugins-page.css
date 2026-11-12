@@ -1,0 +1,484 @@
+/* ===========================
+   插件页（PluginsPage）
+   顶部存储概览（占用 + 安装位置）→ 可展开的插件列表 → 让 AI Agent 找插件 → 安全说明
+   =========================== */
+
+.pl-page {
+  max-width: 1080px;
+}
+
+/* ---------- 存储概览 ---------- */
+
+.pl-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-bottom: 28px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.pl-overview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 20px 22px;
+}
+
+.pl-overview-section + .pl-overview-section {
+  border-left: 1px solid var(--border);
+}
+
+@media (max-width: 860px) {
+  .pl-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .pl-overview-section + .pl-overview-section {
+    border-top: 1px solid var(--border);
+    border-left: none;
+  }
+}
+
+.pl-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.pl-section-label .badge {
+  margin-left: 2px;
+}
+
+.pl-usage-total {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.pl-usage-number {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-usage-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.pl-usage-bar {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+.pl-usage-seg {
+  min-width: 4px;
+  height: 100%;
+  transition: flex-grow var(--transition-normal);
+}
+
+.pl-usage-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.pl-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pl-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pl-legend-size {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-path {
+  padding: 10px 12px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  word-break: break-all;
+  user-select: text;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.pl-warning {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.pl-warning > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--warning);
+}
+
+.pl-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+/* ---------- 插件列表 ---------- */
+
+.pl-grid-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 2px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pl-grid-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.pl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 可展开的插件条目：收起时一行，展开显示详情 */
+.pl-item {
+  --pl-tone: var(--accent);
+  padding: 0;
+  overflow: hidden;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pl-item:hover,
+.pl-item.is-expanded {
+  border-color: color-mix(in srgb, var(--pl-tone) 40%, transparent);
+}
+
+.pl-item.is-expanded {
+  box-shadow: var(--shadow-md);
+}
+
+.pl-item-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pl-item-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.pl-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  color: var(--pl-tone);
+  background: color-mix(in srgb, var(--pl-tone) 16%, transparent);
+  border-radius: 10px;
+}
+
+.pl-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.pl-item-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pl-item-summary {
+  margin-top: 2px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pl-item-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-item-progress .progress-bar {
+  flex: 1;
+  max-width: 220px;
+  height: 4px;
+}
+
+.pl-item-size {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.pl-item.is-expanded .pl-chevron,
+.pl-rotated {
+  transform: rotate(180deg);
+}
+
+.pl-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 16px 14px 64px;
+  animation: fadeIn 200ms ease;
+}
+
+.pl-status {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+.pl-status-installed {
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.pl-status-idle {
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+}
+
+.pl-status-busy {
+  color: var(--accent-light);
+  background: rgba(var(--accent-rgb), 0.14);
+}
+
+.pl-status-failed {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.pl-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.pl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pl-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.pl-tag-accent {
+  color: var(--accent-light);
+  background: rgba(var(--accent-rgb), 0.1);
+  border-color: rgba(var(--accent-rgb), 0.2);
+}
+
+.pl-formats {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.pl-formats strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pl-error {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  word-break: break-all;
+  user-select: text;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.pl-error > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--error);
+}
+
+.pl-info {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.pl-engine-path {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  word-break: break-all;
+  user-select: text;
+}
+
+.pl-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: -10px;
+}
+
+.pl-btn-uninstall:hover {
+  color: var(--error);
+}
+
+/* ---------- 让 AI Agent 找插件 ---------- */
+
+.pl-agent {
+  margin-top: 20px;
+  padding: 16px;
+}
+
+.pl-agent-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pl-agent-head .pl-item-summary {
+  white-space: normal;
+}
+
+.pl-agent-steps {
+  margin: 14px 0 6px;
+  padding-left: 66px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.pl-agent-indent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 48px;
+}
+
+.pl-agent-prompt {
+  max-height: 420px;
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  overflow: auto;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* ---------- 底部说明 ---------- */
+
+.pl-note {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-hover);
+  border-radius: var(--radius-lg);
+}
+
+.pl-note > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--accent);
+}
+
+/* ---------- 添加插件源弹窗 ---------- */
+
+.pl-modal-desc {
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}

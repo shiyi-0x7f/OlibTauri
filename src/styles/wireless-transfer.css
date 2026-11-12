@@ -1,0 +1,89 @@
+/* 无线传书弹窗：随窗口缩小，内容超出时弹窗内滚动 */
+
+.modal.wireless-transfer-modal {
+  width: min(460px, calc(100vw - 32px));
+  min-width: 0;
+  max-width: none;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+/* 二维码随窗口高度缩放，手机扫码 120px 仍可识别 */
+.wt-qr {
+  display: block;
+  width: clamp(120px, 26vh, 180px);
+  height: clamp(120px, 26vh, 180px);
+}
+
+/* 收到手机发来的书：自绘提示卡（LanReceiveNotifier），宽度不超出视口 */
+.lan-toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(380px, calc(100vw - 32px));
+  padding: 14px 16px;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  backdrop-filter: blur(20px);
+  transition:
+    opacity 0.3s,
+    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lan-toast-leave {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+}
+
+.lan-toast-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.15);
+}
+
+/* min-width: 0 才能让长书名在 flex 里截断，而不是撑宽整张卡 */
+.lan-toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.lan-toast-title {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lan-toast-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lan-toast-action {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 5px 10px;
+}
+
+@media (max-height: 640px) {
+  .modal.wireless-transfer-modal {
+    padding: 20px;
+  }
+}

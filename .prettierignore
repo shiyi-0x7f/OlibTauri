@@ -1,0 +1,6 @@
+dist/
+node_modules/
+src-tauri/
+vendor/
+release.local/
+pnpm-lock.yaml

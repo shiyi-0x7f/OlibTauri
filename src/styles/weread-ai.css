@@ -1,0 +1,326 @@
+/* ===========================
+   微信读书 AI 问书：回答排版（.wr-md）与对话面板
+   跟随主题变量，深浅色自动适配
+   =========================== */
+
+.wr-md {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--text-primary);
+  word-break: break-word;
+  letter-spacing: 0.01em;
+}
+
+.wr-md > :first-child {
+  margin-top: 0;
+}
+
+.wr-md > :last-child {
+  margin-bottom: 0;
+}
+
+.wr-md p {
+  margin: 0 0 0.85em;
+}
+
+.wr-md h1,
+.wr-md h2,
+.wr-md h3,
+.wr-md h4,
+.wr-md h5,
+.wr-md h6 {
+  margin: 1.5em 0 0.6em;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.wr-md h1 {
+  font-size: 18px;
+}
+
+.wr-md h2 {
+  font-size: 16.5px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wr-md h3 {
+  font-size: 15px;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent);
+}
+
+.wr-md h4,
+.wr-md h5,
+.wr-md h6 {
+  font-size: 14.5px;
+  color: var(--accent);
+}
+
+/* 加粗：荧光笔划线效果，呼应阅读场景 */
+.wr-md strong {
+  font-weight: 650;
+  background: linear-gradient(transparent 62%, rgba(var(--accent-rgb), 0.26) 62%);
+  padding: 0 1px;
+}
+
+.wr-md em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.wr-md del {
+  color: var(--text-muted);
+}
+
+.wr-md ul,
+.wr-md ol {
+  margin: 0 0 0.85em;
+  padding-left: 1.5em;
+}
+
+.wr-md ul {
+  list-style: disc;
+}
+
+.wr-md ol {
+  list-style: decimal;
+}
+
+.wr-md ul ul {
+  list-style: circle;
+}
+
+.wr-md li {
+  margin: 0.3em 0;
+  padding-left: 0.2em;
+}
+
+.wr-md li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.wr-md li > p {
+  margin: 0.2em 0;
+}
+
+.wr-md li > ul,
+.wr-md li > ol {
+  margin: 0.2em 0 0.3em;
+}
+
+.wr-md blockquote {
+  margin: 0 0 0.9em;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(var(--accent-rgb), 0.07);
+  color: var(--text-secondary);
+}
+
+.wr-md blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.wr-md code {
+  font-family: "Cascadia Code", "JetBrains Mono", Consolas, ui-monospace, monospace;
+  font-size: 0.86em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+}
+
+.wr-md pre {
+  margin: 0 0 0.9em;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.wr-md pre code {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12.5px;
+}
+
+.wr-md table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wr-md th,
+.wr-md td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.wr-md th {
+  background: rgba(var(--accent-rgb), 0.1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wr-md tbody tr:nth-child(even) td {
+  background: var(--bg-hover);
+}
+
+.wr-md hr {
+  height: 1px;
+  margin: 1.4em 0;
+  border: none;
+  background: var(--border);
+}
+
+.wr-md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--accent-rgb), 0.4);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.wr-md a:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* 生成中：末尾闪烁光标 */
+.wr-md.wr-streaming > :last-child::after {
+  content: "▍";
+  margin-left: 2px;
+  color: var(--accent);
+  animation: wr-caret 1s steps(2, start) infinite;
+}
+
+@keyframes wr-caret {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- 对话面板 ---------- */
+
+.wr-ask-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.wr-ask-chip:hover:not(:disabled) {
+  background: rgba(var(--accent-rgb), 0.16);
+  transform: translateY(-1px);
+}
+
+.wr-ask-chip:disabled,
+.wr-ask-question:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.wr-ask-question {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.wr-ask-question:hover:not(:disabled) {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  background: var(--bg-hover);
+}
+
+.wr-ask-turn-q {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wr-ask-turn-a {
+  padding: 16px 18px;
+  border-radius: 4px 14px 14px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+}
+
+.wr-ask-thinking {
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.wr-ask-thinking summary {
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-secondary);
+  list-style: none;
+}
+
+.wr-ask-thinking summary::-webkit-details-marker {
+  display: none;
+}
+
+.wr-ask-thinking-body {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--border);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.wr-ask-input {
+  flex: 1;
+  min-height: 22px;
+  max-height: 120px;
+  padding: 0;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
