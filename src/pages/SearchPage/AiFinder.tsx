@@ -1,4 +1,5 @@
 import type { MouseEvent as ReactMouseEvent } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowRight,
   BookOpen,
@@ -317,7 +318,7 @@ export function PrescriberLoginModal({
   subtitle?: string;
 }) {
   if (!login.open) return null;
-  return (
+  return createPortal(
     <div
       className="prescriber-modal-overlay"
       onClick={(e) => {
@@ -343,6 +344,7 @@ export function PrescriberLoginModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.getElementById("root") ?? document.body,
   );
 }
