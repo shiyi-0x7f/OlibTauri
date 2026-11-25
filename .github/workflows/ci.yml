@@ -1,0 +1,95 @@
+# 质量门禁：push / PR 全量跑 lint + 类型检查 + 测试（与本地 `pnpm run check` / clippy 同一套）。
+# Rust job 需要 vendor crate，复用 build.yml 的 OLIB_API_REPO_TOKEN 拉取方式。
+
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    name: Frontend (tsc + eslint + prettier)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check (tsc + eslint + prettier)
+        run: pnpm run check
+
+  rust:
+    name: Rust (fmt + clippy + test)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch private API vendor crate
+        shell: bash
+        env:
+          OLIB_API_REPO_TOKEN: ${{ secrets.OLIB_API_REPO_TOKEN }}
+        run: |
+          if [ -z "$OLIB_API_REPO_TOKEN" ]; then
+            echo "::error::OLIB_API_REPO_TOKEN secret is missing. See build.yml header for setup."
+            exit 1
+          fi
+          rm -rf vendor/olib-api-plugin-rs
+          mkdir -p vendor
+          git clone --depth 1 \
+            "https://x-access-token:${OLIB_API_REPO_TOKEN}@github.com/shiyi-0x7f/olib-api-plugin-rs.git" \
+            vendor/olib-api-plugin-rs
+
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev \
+            libgtk-3-dev \
+            libsoup-3.0-dev \
+            libjavascriptcoregtk-4.1-dev
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          shared-key: ci-lint
+
+      # tauri-build 的 build.rs 要求 frontendDist 目录存在
+      - name: Ensure dist exists
+        run: mkdir -p dist
+
+      - name: cargo fmt
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: cargo clippy
+        working-directory: src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: cargo test
+        working-directory: src-tauri
+        run: cargo test

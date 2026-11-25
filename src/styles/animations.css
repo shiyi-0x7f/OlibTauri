@@ -1,0 +1,105 @@
+/* ===========================
+   Animations
+   =========================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 页面切换：淡入 + 轻微上移，只做进入不做退出（切换跟手，无需新旧页同时挂载） */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 路由外层容器：撑满 main-content，保持各页原有的高度与滚动行为。
+   不设 animation-fill-mode / will-change：transform 只在入场 180ms 内存在，
+   避免其成为页内 position: fixed 弹窗的包含块 */
+.page-transition {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  animation: pageEnter 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
+}
+
+/* 书籍详情弹窗自身的入场动画（无共享过渡时使用） */
+.book-detail-overlay {
+  animation: fadeIn 200ms ease;
+}
+
+.book-detail-panel {
+  animation: slideUp 300ms ease;
+}
+
+/* 经共享元素过渡打开时关闭自身动画，由过渡统一处理。
+   用挂载时确定的 class 而非 <html> 标记直接选择：标记在过渡结束后移除，若据此切换会让动画重播 */
+.book-detail-overlay.via-shared-transition,
+.book-detail-panel.via-shared-transition {
+  animation: none;
+}
+
+/* 书籍卡片 ⇄ 详情弹窗：封面共享元素过渡 450ms（见 utils/bookTransition.ts），其余内容同步交叉淡化 */
+::view-transition-group(book-cover),
+::view-transition-old(book-cover),
+::view-transition-new(book-cover),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* 卡片与弹窗封面宽高比不同：两张快照都铺满变形框，避免拉伸露底 */
+::view-transition-old(book-cover),
+::view-transition-new(book-cover) {
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
